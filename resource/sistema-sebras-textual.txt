@@ -1,0 +1,645 @@
+                    SEBRAS
+                       │
+        ┌──────────────┼──────────────┐
+     Eleitores      Candidatos      Partidos
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+                    VOTAÇÃO
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+   Presidente       Senador      Deputado Federal
+        │              │              │
+        └──────────────┼──────────────┘
+                       │
+                    APURAÇÃO
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+      Brasil         Região         Estado
+        └──────────────│──────────────┘
+                    Município
+                       │
+                     Urna
+                       │
+        │              │              │
+                 Resultado final
+                 
+                 
+1. Interpretação geral do sistema
+O SEBRAS — Sistema Eleitoral Brasileiro pode ser entendido como um sistema distribuído de votação e apuração, composto conceitualmente por:
+
+Como você solicitou considerar estados, municípios e regiões, essas dimensões precisam aparecer na modelagem dos requisitos de votação e apuração.
+
+
+2. Requisitos Funcionais
+
+RF01 — Cadastrar eleitor
+
+O sistema deverá permitir o cadastro de eleitores.
+
+Dados que provavelmente deverão ser considerados:
+
+identificação do eleitor;
+nome;
+número do título eleitoral;
+zona eleitoral;
+seção eleitoral;
+estado;
+município;
+região;
+situação do eleitor.
+
+Observação: alguns desses campos são uma especificação derivada. O cliente apenas informou "Cadastrar Eleitor".
+
+RF02 — Consultar eleitor
+
+O sistema deverá permitir localizar e consultar um eleitor cadastrado.
+
+A consulta poderá utilizar, por exemplo:
+
+título eleitoral;
+identificador do eleitor;
+nome;
+município;
+estado;
+zona;
+seção.
+
+Esse requisito não está escrito literalmente pelo cliente, mas é uma função normalmente necessária para que o cadastro seja operacionalmente utilizável.
+
+RF03 — Alterar cadastro de eleitor
+
+O sistema deverá permitir alterar os dados cadastrais de um eleitor autorizado.
+
+RF04 — Cadastrar candidato
+
+O sistema deverá permitir cadastrar candidatos.
+
+O candidato deverá estar associado ao cargo para o qual concorre:
+
+Presidente;
+Senador;
+Deputado Federal.
+
+Também deverá existir associação com partido.
+
+RF05 — Consultar candidato
+
+O sistema deverá permitir consultar candidatos cadastrados.
+
+As consultas poderão ser realizadas por:
+
+número;
+nome;
+partido;
+cargo;
+estado, quando aplicável.
+RF06 — Cadastrar partido
+
+O sistema deverá permitir cadastrar partidos políticos.
+
+Deverão existir, no mínimo, informações de identificação do partido, como:
+
+nome;
+sigla;
+número;
+situação cadastral.
+3. Requisitos relacionados à estrutura eleitoral
+
+Aqui entra uma parte que considero muito importante para o seu projeto.
+
+O cliente explicitamente pediu:
+
+"considere estados, municípios, regiões para a votação."
+
+Portanto, eu criaria requisitos específicos para essa dimensão geográfica.
+
+RF07 — Cadastrar região eleitoral/geográfica
+
+O sistema deverá permitir registrar as regiões do país utilizadas para agrupamento da apuração.
+
+Exemplo:
+
+Norte
+Nordeste
+Centro-Oeste
+Sudeste
+Sul
+RF08 — Cadastrar estado
+
+O sistema deverá permitir registrar os estados da Federação e associá-los à respectiva região.
+
+Exemplo:
+
+Centro-Oeste
+    ├── Goiás
+    ├── Mato Grosso
+    ├── Mato Grosso do Sul
+    └── Distrito Federal
+RF09 — Cadastrar município
+
+O sistema deverá permitir registrar municípios e associá-los ao respectivo estado.
+
+Assim:
+
+Região
+   ↓
+Estado
+   ↓
+Município
+   ↓
+Zona
+   ↓
+Seção
+   ↓
+Urna
+
+Essa hierarquia será extremamente útil posteriormente para a apuração.
+
+4. Requisitos de votação
+RF10 — Realizar votação para Presidente
+
+O sistema deverá permitir que um eleitor apto registre seu voto para o cargo de Presidente da República.
+
+O sistema deverá:
+
+identificar o eleitor;
+verificar sua condição de votação;
+apresentar os candidatos habilitados;
+permitir a seleção do candidato;
+registrar o voto;
+impedir novo voto para o mesmo cargo pelo mesmo eleitor.
+RF11 — Realizar votação para Senador
+
+O sistema deverá permitir que um eleitor apto registre seu voto para Senador.
+
+O voto deverá ser associado à localização eleitoral correspondente.
+
+Por exemplo:
+
+Eleitor
+   ↓
+Estado
+   ↓
+Município
+   ↓
+Seção
+   ↓
+Voto para Senador
+
+Isso é particularmente importante porque a eleição para senador possui abrangência estadual.
+
+RF12 — Realizar votação para Deputado Federal
+
+O sistema deverá permitir que um eleitor apto registre seu voto para Deputado Federal.
+
+O voto deverá estar associado à unidade eleitoral correspondente.
+
+RF13 — Validar voto
+
+O sistema deverá validar uma operação de votação antes de registrá-la.
+
+Deverá verificar, entre outras possibilidades:
+
+eleitor cadastrado;
+eleitor apto;
+cargo válido;
+candidato válido;
+candidato habilitado para aquela eleição;
+eleitor ainda não ter votado naquele cargo.
+RF14 — Registrar voto
+
+O sistema deverá registrar cada voto realizado.
+
+O registro deverá permitir posteriormente a apuração sem alterar o conteúdo original do voto.
+
+Uma estrutura conceitual poderia ser:
+
+VOTO
+ ├── id_voto
+ ├── eleitor
+ ├── cargo
+ ├── candidato
+ ├── partido
+ ├── região
+ ├── estado
+ ├── município
+ ├── zona
+ ├── seção
+ ├── urna
+ └── data/hora
+
+Em um sistema eleitoral real, entretanto, não se deve simplesmente armazenar uma relação direta eleitor → candidato, porque isso pode comprometer o sigilo do voto. Para um projeto acadêmico/simulador, podemos definir uma arquitetura apropriada de anonimização posteriormente.
+
+5. Requisitos de apuração
+RF15 — Iniciar apuração
+
+O sistema deverá permitir iniciar o processo de apuração dos votos.
+
+RF16 — Apurar votos
+
+O sistema deverá contabilizar os votos registrados.
+
+A apuração deverá permitir agrupamento por:
+
+candidato;
+partido;
+cargo;
+município;
+estado;
+região;
+Brasil.
+RF17 — Contabilizar votos por Presidente
+
+O sistema deverá calcular a quantidade de votos recebida por cada candidato à Presidência.
+
+RF18 — Contabilizar votos para Senador
+
+O sistema deverá calcular a quantidade de votos recebida por cada candidato ao Senado, respeitando a abrangência eleitoral correspondente.
+
+RF19 — Contabilizar votos para Deputado Federal
+
+O sistema deverá calcular a quantidade de votos recebida por cada candidato a Deputado Federal.
+
+6. Requisitos de acompanhamento da apuração
+RF20 — Informar andamento da apuração
+
+O sistema deverá apresentar o percentual ou quantidade de votos/urnas já apurados.
+
+Por exemplo:
+
+APURAÇÃO NACIONAL
+
+
+Urnas apuradas:       245.800
+Urnas restantes:       54.200
+Total de urnas:       300.000
+
+
+Percentual apurado:     81,93%
+RF21 — Informar número de urnas restantes
+
+O sistema deverá informar a quantidade de urnas que ainda não foram processadas.
+
+RF22 — Informar apuração por região
+
+O sistema deverá apresentar o andamento da apuração individualmente por região.
+
+Exemplo:
+
+NORTE       82,4%
+NORDESTE    79,8%
+CENTRO-OESTE 91,2%
+SUDESTE     84,1%
+SUL         88,7%
+RF23 — Informar apuração por estado
+
+O sistema deverá apresentar o andamento da apuração individualmente por estado.
+
+Exemplo:
+
+Goiás              94,3%
+Distrito Federal   96,2%
+São Paulo           87,4%
+Rio de Janeiro      82,1%
+...
+RF24 — Informar apuração por município
+
+Embora o cliente não tenha escrito explicitamente "informar por município", ele solicitou que municípios sejam considerados.
+
+Portanto, o sistema deverá permitir consultar o andamento da apuração por município.
+
+Exemplo:
+
+GOIÁS
+
+
+Goiânia             98,2%
+Anápolis            95,7%
+Aparecida de Goiânia 93,4%
+Rio Verde           91,8%
+RF25 — Informar apuração por urna
+
+O sistema deverá permitir identificar o estado de processamento de cada urna.
+
+Possíveis estados:
+
+AGUARDANDO
+RECEBIDA
+PROCESSANDO
+APURADA
+ERRO
+REJEITADA
+
+Esse requisito será particularmente importante se você posteriormente quiser transformar o SEBRAS em um sistema distribuído, como o projeto de cluster que você estava desenvolvendo anteriormente.
+
+7. Resultado final
+RF26 — Apresentar resultado final para Presidente
+
+O sistema deverá apresentar o resultado final da eleição presidencial.
+
+RF27 — Apresentar resultado final para Senador
+
+O sistema deverá apresentar o resultado final da eleição para Senador.
+
+RF28 — Apresentar resultado final para Deputado Federal
+
+O sistema deverá apresentar o resultado final para Deputado Federal.
+
+RF29 — Apresentar resultados consolidados
+
+O sistema deverá permitir visualizar os resultados consolidados por diferentes níveis geográficos:
+
+BRASIL
+  │
+  ├── REGIÃO
+  │     │
+  │     └── ESTADO
+  │            │
+  │            └── MUNICÍPIO
+  │                   │
+  │                   └── URNA
+8. Requisitos Funcionais consolidados
+
+Podemos organizar os RFs em módulos:
+
+ID	Requisito	Módulo
+RF01	Cadastrar eleitor	Cadastro
+RF02	Consultar eleitor	Cadastro
+RF03	Alterar eleitor	Cadastro
+RF04	Cadastrar candidato	Cadastro
+RF05	Consultar candidato	Cadastro
+RF06	Cadastrar partido	Cadastro
+RF07	Cadastrar região	Geografia
+RF08	Cadastrar estado	Geografia
+RF09	Cadastrar município	Geografia
+RF10	Votar para Presidente	Votação
+RF11	Votar para Senador	Votação
+RF12	Votar para Deputado Federal	Votação
+RF13	Validar voto	Votação
+RF14	Registrar voto	Votação
+RF15	Iniciar apuração	Apuração
+RF16	Apurar votos	Apuração
+RF17	Apurar Presidente	Apuração
+RF18	Apurar Senador	Apuração
+RF19	Apurar Deputado Federal	Apuração
+RF20	Informar andamento	Monitoramento
+RF21	Informar urnas restantes	Monitoramento
+RF22	Informar andamento por região	Monitoramento
+RF23	Informar andamento por estado	Monitoramento
+RF24	Informar andamento por município	Monitoramento
+RF25	Informar estado da urna	Monitoramento
+RF26	Resultado Presidente	Resultado
+RF27	Resultado Senador	Resultado
+RF28	Resultado Deputado Federal	Resultado
+RF29	Resultado consolidado	Resultado
+9. Requisitos Não Funcionais
+
+Agora entram as características técnicas que você especificou.
+
+RNF01 — Arquitetura de hardware
+
+O sistema deverá executar em computadores PC compatíveis com arquitetura x86-64 (64 bits).
+
+RNF02 — Interface Web
+
+A interface do sistema deverá utilizar tecnologias compatíveis com HTML5.
+
+RNF03 — JavaScript
+
+A camada de apresentação deverá utilizar JavaScript moderno, preferencialmente utilizando recursos padronizados da versão atual da linguagem.
+
+RNF04 — Comunicação assíncrona
+
+O sistema deverá permitir comunicação assíncrona entre o navegador e o servidor quando necessário.
+
+Por exemplo:
+
+Browser
+   │
+   │ HTTP Request
+   ▼
+PHP
+   │
+   ▼
+Banco de Dados
+   │
+   ▼
+PHP
+   │
+   │ JSON
+   ▼
+JavaScript
+   │
+   ▼
+Atualização da tela
+
+Isso permitirá atualizar o andamento da apuração sem necessariamente recarregar toda a página.
+
+RNF05 — Backend
+
+O servidor deverá utilizar PHP para processamento das requisições e acesso aos dados, conforme a restrição tecnológica estabelecida.
+
+RNF06 — Persistência
+
+Os dados do sistema deverão ser armazenados em um banco de dados persistente.
+
+Como você mencionou PHP, uma arquitetura natural seria:
+
+HTML5
+   +
+JavaScript
+   ↓
+HTTP/HTTPS
+   ↓
+PHP
+   ↓
+MySQL/MariaDB
+RNF07 — Formato de comunicação
+
+As respostas entre JavaScript e PHP deverão preferencialmente utilizar JSON.
+
+Exemplo conceitual:
+
+{
+    "estado": "GO",
+    "municipio": "Goiania",
+    "urnasTotal": 1200,
+    "urnasApuradas": 1050,
+    "percentual": 87.5
+}
+RNF08 — Segurança
+
+O sistema deverá proteger os dados contra acesso não autorizado.
+
+Deverá considerar:
+
+autenticação;
+autorização;
+controle de sessões;
+validação dos dados;
+proteção contra SQL Injection;
+proteção contra XSS;
+proteção contra CSRF;
+comunicação HTTPS.
+RNF09 — Integridade dos votos
+
+O sistema deverá garantir que um voto registrado não seja alterado indevidamente durante a apuração.
+
+RNF10 — Disponibilidade
+
+O sistema deverá permanecer disponível durante o período de votação e apuração, considerando mecanismos de recuperação de falhas.
+
+RNF11 — Consistência
+
+A contabilização dos votos deverá ser consistente mesmo quando houver múltiplas operações simultâneas.
+
+Esse requisito é muito importante.
+
+Imagine:
+
+Urna 001 ──┐
+Urna 002 ──┤
+Urna 003 ──┼──> APURAÇÃO
+Urna 004 ──┤
+Urna 005 ──┘
+
+Várias urnas podem enviar dados simultaneamente. O banco deverá garantir que os resultados não sejam corrompidos.
+
+RNF12 — Concorrência
+
+O sistema deverá suportar múltiplos eleitores, urnas e processos de apuração trabalhando simultaneamente.
+
+RNF13 — Desempenho
+
+As operações de votação e apuração deverão apresentar tempo de resposta adequado ao volume esperado de operações.
+
+RNF14 — Escalabilidade
+
+A arquitetura deverá permitir aumento do número de:
+
+eleitores;
+urnas;
+municípios;
+estados;
+votos;
+consultas;
+processos de apuração.
+RNF15 — Auditabilidade
+
+As operações importantes deverão possuir registros de auditoria.
+
+Por exemplo:
+
+USUÁRIO
+DATA/HORA
+OPERAÇÃO
+RECURSO
+RESULTADO
+IP
+
+Porém, novamente, o log de auditoria não deve permitir descobrir em quem um eleitor votou.
+
+10. Uma distinção importante: requisito funcional × não funcional
+
+Uma maneira muito boa de explicar isso em um trabalho de Engenharia de Software é:
+
+Funcional
+
+O que o sistema faz.
+
+Exemplo:
+
+"O sistema deverá permitir ao eleitor votar para Presidente."
+
+Não funcional
+
+Como o sistema deverá funcionar ou quais restrições deverá obedecer.
+
+Exemplo:
+
+"O sistema deverá executar em computadores x86-64."
+
+Outro:
+
+"O sistema deverá utilizar HTML5 e JavaScript na interface."
+
+Outro:
+
+"O sistema deverá proteger os dados contra acesso não autorizado."
+
+11. Estrutura que eu recomendaria para o SEBRAS
+
+Considerando tudo que você descreveu, eu estruturaria o projeto em seis módulos principais:
+
+┌─────────────────────────────────────────────┐
+│                   SEBRAS                    │
+├─────────────────────────────────────────────┤
+│                                             │
+│  1. CADASTROS                               │
+│     ├── Eleitores                           │
+│     ├── Candidatos                          │
+│     └── Partidos                            │
+│                                             │
+│  2. ESTRUTURA ELEITORAL                     │
+│     ├── Regiões                             │
+│     ├── Estados                             │
+│     ├── Municípios                          │
+│     ├── Zonas                               │
+│     ├── Seções                              │
+│     └── Urnas                               │
+│                                             │
+│  3. VOTAÇÃO                                 │
+│     ├── Presidente                          │
+│     ├── Senador                             │
+│     └── Deputado Federal                    │
+│                                             │
+│  4. APURAÇÃO                                │
+│     ├── Urnas                               │
+│     ├── Municípios                          │
+│     ├── Estados                             │
+│     ├── Regiões                             │
+│     └── Brasil                              │
+│                                             │
+│  5. MONITORAMENTO                           │
+│     ├── Urnas processadas                   │
+│     ├── Urnas restantes                     │
+│     ├── % apurado                           │
+│     └── Status da apuração                  │
+│                                             │
+│  6. RESULTADOS                              │
+│     ├── Presidente                          │
+│     ├── Senador                             │
+│     ├── Deputado Federal                    │
+│     ├── Município                           │
+│     ├── Estado                              │
+│     └── Região                              │
+│                                             │
+└─────────────────────────────────────────────┘
+E há uma questão arquitetural particularmente interessante
+
+Pelo que você descreveu, eu não trataria o SEBRAS simplesmente como um CRUD em PHP.
+
+A partir desses requisitos, ele pode ser modelado como um sistema distribuído de votação e apuração:
+
+                  ┌──────────────┐
+                  │   SERVIDOR   │
+                  │    CENTRAL   │
+                  └──────┬───────┘
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+       REGIÃO 1        REGIÃO 2       REGIÃO 3
+          │              │              │
+       Estados         Estados        Estados
+          │              │              │
+      Municípios      Municípios     Municípios
+          │              │              │
+        Urnas           Urnas          Urnas
+
+Isso abre espaço para uma segunda etapa do projeto: transformar os requisitos em casos de uso, depois em requisitos detalhados, regras de negócio, modelo entidade-relacionamento, arquitetura cliente/servidor, API PHP/JSON, e finalmente o modelo de apuração distribuída.
+
+Para esse projeto, eu recomendaria inclusive separar RF (o que o sistema faz) de RN — Regras de Negócio, porque várias regras eleitorais não são propriamente funcionalidades. Essa terceira categoria vai ser importante para não misturar, por exemplo, "votar para senador" com "um eleitor não pode votar duas vezes para o mesmo cargo".
+

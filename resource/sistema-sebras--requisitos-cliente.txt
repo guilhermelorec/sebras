@@ -1,0 +1,25 @@
+16:55 04/09/2026
+
+
+Sistema Eleitoral Brasileiro - SEBRAS
+
+
+REQUISITOS DO CLIENTE
+
+BLOCO 01
+	- Cadastrar Eleitor
+	- Cadastrar Candidato
+	- Cadastrar Partido
+
+BLOCO 02
+	- Votar num candidato a PRESIDÊNCIA
+	- Votar num candidato a SENADOR
+	- Votar num candidato a DEPUTADO FEDERAL
+
+BLOCO 03
+	- Realizar a apuração de Votos
+	- Informar o andamento da apuração
+	- Informar número restante de urnas
+	- Informar andamento por Região do país
+	- Informar andamento por Estado do país
+	- Informar Resultado Final da votação para as 3 classes
