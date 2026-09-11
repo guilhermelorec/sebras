@@ -26,7 +26,6 @@ import   dao.jdbc.ZonaJdbcDAO;
 import service.AbstencaoService;
 import   service.ResultadoService;
 import   service.VotacaoService;
-import   service.ZonaService;
 
 import tankDB.ConnectionFactory;
 import tankDB.UCPConnectionFactory;
@@ -92,10 +91,6 @@ public final class ApplicationContext {
 
     public static AbstencaoDAO abstencaoDAO() {
         return new AbstencaoJdbcDAO(CONNECTION_FACTORY);
-    }
-
-    public static ZonaService zonaService() {
-        return new ZonaService(CONNECTION_FACTORY);
     }
 
     public static VotacaoService votacaoService() {
