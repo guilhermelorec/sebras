@@ -1,0 +1,27 @@
+---
+description: Norte de negócio do Sebras — vault Obsidian em docs/cerebro
+alwaysApply: true
+---
+
+# Cérebro de negócio (Obsidian)
+
+O norte do Sebras está em `docs/cerebro/`. Código segue o cérebro, não o contrário.
+
+## Antes de implementar
+
+1. Ler `docs/cerebro/00-inicio/Home.md` e o RF/CU/RN afetado.
+2. RF novo: criar nota em `03-requisitos/`, classificar e ligar na matriz.
+3. Mudança em regra já documentada: abrir SCM em `06-mudancas/` primeiro.
+4. Não puxar a branch `frontend` sem RF de UI (`RNF08` está adiado).
+
+## IDs
+
+`RC` cliente · `RF` funcional · `RNF` não funcional · `RN` regra · `CU` caso de uso · `SCM` mudança.
+
+Próximos livres: RF12, RC08, RNF09, CU12, SCM-002.
+
+## Não fazer
+
+- Inventar RF que o cliente não pediu.
+- Tratar o plano de testes *Limite de Crédito* (`99-fontes/originais/plano_testes_limite_credito.docx`) como regra do Sebras — é só o molde.
+- Alterar `VotacaoService` / schema sem atualizar `02-negocio/Regras-de-negocio.md`.
