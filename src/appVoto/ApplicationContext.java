@@ -47,7 +47,11 @@ public final class ApplicationContext {
             return UCPConnectionFactory.getInstance();
         }
 
-        return WildFlyJndiConnectionFactory.getInstance();
+        try {
+            return WildFlyJndiConnectionFactory.getInstance();
+        } catch (RuntimeException e) {
+            return UCPConnectionFactory.getInstance();
+        }
     }
 
     public static PartidoDAO partidoDAO() {

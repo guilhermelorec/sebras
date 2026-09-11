@@ -60,7 +60,7 @@ public class VotoJdbcDAO implements VotoDAO {
     @Override
     public List<ResultadoVotacao> resultadoPorZona(Long zonaId, Long eleicaoId, int turno) {
         String sql = """
-            SELECT ca.numero,
+            SELECT c.numero,
                    e.nome AS nome_candidato,
                    p.sigla AS partido,
                    COUNT(v.id) AS total
@@ -68,11 +68,10 @@ public class VotoJdbcDAO implements VotoDAO {
             JOIN candidatura c ON c.id = v.candidatura_id
             JOIN eleitor e ON e.id = c.eleitor_id
             JOIN partido p ON p.id = c.partido_id
-            JOIN cargo ca ON ca.id = c.cargo_id
             WHERE v.zona_id = ?
               AND v.eleicao_id = ?
               AND v.turno = ?
-            GROUP BY ca.numero, e.nome, p.sigla
+            GROUP BY c.numero, e.nome, p.sigla
             ORDER BY total DESC
         """;
 
