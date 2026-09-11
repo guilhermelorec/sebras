@@ -1,0 +1,33 @@
+---
+description: Documentar cada commit/PR em docs/, separado por branch
+alwaysApply: true
+---
+
+# Documentação de commit e PR
+
+Sempre que o usuário pedir commit e/ou PR, **antes ou junto do commit** crie ou atualize um arquivo em `docs/` detalhando as alterações.
+
+## Arquivo
+
+- Um doc por branch: `docs/branch-<nome-da-branch>.md`
+- Se a branch já tiver doc, **acrescente** uma seção do novo commit (não apague o histórico)
+- Atualize o índice em `docs/README.md`
+
+## Conteúdo obrigatório
+
+1. Branch, commits (hash + mensagem) e base do PR
+2. Resumo do que mudou e por quê
+3. Como rodar / como validar
+4. Pastas e arquivos criados, alterados, movidos ou removidos
+5. Linhas relevantes (ex.: L50–54) quando houver lógica, config ou SQL
+6. Bibliotecas, JARs, imagens Docker e plugins (nome + versão + uso)
+7. O que **não** mudou, se for fácil confundir
+
+## Exemplo de nome
+
+```
+docs/branch-frontend.md
+docs/branch-dependencias.md
+```
+
+Não pule este passo mesmo em PR “só de UI” ou “só de config”.
