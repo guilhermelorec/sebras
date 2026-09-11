@@ -6,7 +6,7 @@
 |---|---|
 | Branch | `banco-de-dados` |
 | Base do PR | `main` (`ba3cd2f`) |
-| Commit | (hash no `git log -1` desta branch) — Remove tabela e código de `candidato` e o seed de zonas. |
+| Commits | `e853e2d` remove `candidato` e seed de zonas; merge de `origin/main` para resolver `docs/README.md`. |
 
 ## Resumo
 
@@ -55,4 +55,8 @@ Nenhuma biblioteca, JAR, imagem Docker ou plugin novo. `ojdbc11` / `ucp` 23.9.0.
 
 ## O que não mudou
 
-Servlets e DAOs de partido, eleitor, município, zona, seção, eleição, cargo, candidatura, voto, resultado e abstenção. JSPs, frontend e o vault `docs/cerebro/` (branch `cerebro`).
+Servlets e DAOs de partido, eleitor, município, zona, seção, eleição, cargo, candidatura, voto, resultado e abstenção. JSPs e frontend.
+
+## Merge com `main` (PR #4 `cerebro`)
+
+O `main` ganhou o vault em `docs/cerebro/` (PR #4). As duas branches editavam `docs/README.md`. O índice ficou com as duas linhas: `cerebro` mesclado e `banco-de-dados` pendente.
