@@ -1,0 +1,13 @@
+.git
+.bin
+bin
+lib/**
+!lib/ojdbc11-23.9.0.25.07.jar
+target/**
+!target/sebras.war
+resource/*.pdf
+resource/*.xlsx
+resource/*.png
+resource/*.txt
+**/*.Zone.Identifier
+**/*:Zone.Identifier

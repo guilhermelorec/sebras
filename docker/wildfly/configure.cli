@@ -1,0 +1,4 @@
+embed-server --std-out=echo --server-config=standalone.xml
+/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle.ojdbc,driver-class-name=oracle.jdbc.OracleDriver)
+/subsystem=datasources/data-source=VotacaoUCP:add(jndi-name=java:global/jdbc/VotacaoUCP,driver-name=oracle,connection-url=jdbc:oracle:thin:@//oracle:1521/FREEPDB1,user-name=votacao,password=votacao,jta=false,use-ccm=true,min-pool-size=5,max-pool-size=20,validate-on-match=true)
+stop-embedded-server
